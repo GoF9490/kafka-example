@@ -20,13 +20,13 @@ public class ProducerService {
     public void messageCreate(MessageDto dto) {
         System.out.println(dto);
         String memberData = objectMapper.writeValueAsString(dto);
-        sendKafkaMessage("member-topic", memberData);
+        sendKafkaMessage("message-topic", memberData);
     }
 
     public void messageCreateKey(MessageDto dto, String key) {
         System.out.println(dto);
         String data = objectMapper.writeValueAsString(dto);
-        sendKafkaMessage("member-topic", key, data);
+        sendKafkaMessage("message-topic", key, data);
     }
 
     public void sendKafkaMessage(String topic, String message) {

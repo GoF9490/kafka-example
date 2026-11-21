@@ -15,6 +15,10 @@ public class ConsumerService {
     @Autowired
     private ProducerService producerService;
 
+    // 동일한 그룹의 리스너를 2개 이상 생성 시, 카프카가 생성된 리스너들에게 파티션을 나눠줌.
+    // 즉, 같은 그룹의 리스너의 코드 내용이 다르다면, 같은 토픽의 메세지도 어디 파티션에 들어가냐에 따라 다르게 동작할 수 있음.
+    // 의도된 사항이 아니라면, concurrency옵션으로 리스너를 늘리거나, 그룹ID를 다르게 쓰거나.
+    /*
     @KafkaListener(
             topics = "message-topic",
             groupId = "${spring.kafka.consumer.group-id}",
@@ -36,14 +40,16 @@ public class ConsumerService {
             ack.acknowledge(); //수동 커밋
         }
     }
+     */
 
     @KafkaListener(
             topics = "message-topic",
             groupId = "${spring.kafka.consumer.group-id}",
             containerFactory = "kafkaListener"
+            // concurrency = "2" // 동일한 로직을 수행하는 컨슈머 스레드 2개 생성
     )
     public void consumeMessageTopic(
-            @Header(KafkaHeaders.RECEIVED_KEY) String key,
+            @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) String key,
             String message,
             Acknowledgment ack
     ) {
