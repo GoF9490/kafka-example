@@ -40,3 +40,24 @@ spring:
       # MANUAL: 개발자가 ack.acknowledge()를 호출하면 배치 처리가 끝난 시점에 모아서 커밋. (Acknowledgment 호출 필수)
       # MANUAL_IMMEDIATE: 개발자가 ack.acknowledge()를 호출하는 그 즉시 Kafka 브로커에 커밋 요청 전송. (Acknowledgment 호출 필수)
       ack-mode: MANUAL
+
+    # kafka streams
+    streams:
+      # kafka streams에 사용될 그룹ID
+      application-id: kafka-streams-example
+      properties:
+        # 별도의 직렬화/역직렬화를 코드에 명시하지 않았을 때 기본으로 사용할 데이터 변환 규칙
+        default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        default.value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        # 상태 저장소(RocksDB) 앞에서 데이터를 임시로 모아두는 레코드 캐시의 최대 메모리 크기. 기본값은 10mb.
+        # 값을 0으로 할당시, 지연없이 들어오는 데이터를 바로바로 처리.
+        statestore.cache.max.bytes: 0
+        # 위의 캐시 크기가 존재할 때, 용량이 전부 채워지지 않아도 설정된 주기마다 발송됨. 밀리초(ms)단위이며, 기본값은 30000.
+        # commit.interval.ms: 1000
+
+# kafka streams를 하나의 서버에 두개 이상의 그룹ID로 사용하려면, 별도의 설정을 가해야함. 추가 설정은 KafkaStreamsConfig 참조.
+custom:
+  kafka:
+    streams:
+      message-count-id: message-count-group
+      duplicate-alert-id: duplicate-alert-group

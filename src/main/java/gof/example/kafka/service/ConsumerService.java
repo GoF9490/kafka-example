@@ -74,7 +74,28 @@ public class ConsumerService {
             groupId = "${spring.kafka.consumer.admin-topic-dlq-group-id}",
             containerFactory = "kafkaListener"
     )
-    public void consumeMessageTopicDlq(String message) {
+    public void consumeMessageTopicDlq(String message, Acknowledgment ack) {
         System.out.println("message-topic-dlq 메시지 수신 : " + message);
+        ack.acknowledge();
+    }
+
+    @KafkaListener(
+            topics = "message-count-5m",
+            groupId = "${spring.kafka.consumer.admin-topic-dlq-group-id}",
+            containerFactory = "kafkaListener"
+    )
+    public void consumeMessageCount5m(String message, Acknowledgment ack) {
+        System.out.println("message-count-5m 메시지 수신 : " + message);
+        ack.acknowledge();
+    }
+
+    @KafkaListener(
+            topics = "duplicate-alerts",
+            groupId = "${spring.kafka.consumer.admin-topic-dlq-group-id}",
+            containerFactory = "kafkaListener"
+    )
+    public void consumeDuplicateAlerts(String message, Acknowledgment ack) {
+        System.out.println("duplicate-alerts 메시지 수신 : " + message);
+        ack.acknowledge();
     }
 }
